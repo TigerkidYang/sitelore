@@ -1,0 +1,29 @@
+{
+  "name": "sitelore",
+  "version": "0.1.0",
+  "description": "Community operating experience for AI browser agents, as an MCP server",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "sitelore": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skill"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@sitelore/core": "0.1.0",
+    "tsup": "^8.5.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "sitelore-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "packages/client",
+    "packages/data-tools",
+    "services/intake"
+  ],
+  "scripts": {
+    "build": "npm run build -w packages/core && npm run build -w packages/client -w packages/data-tools",
+    "typecheck": "npm run build -w packages/core && npm run typecheck --workspaces --if-present",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0"
+  }
+}

@@ -1,0 +1,48 @@
+name: check
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  # The code repo this data repo trusts to run with write access. Must be a repo you control.
+  SITELORE_CODE_REPO: TigerkidYang/sitelore
+  # Pin the tooling to a release tag or commit SHA, never a branch: publish.yml can write to this repo.
+  # No release tag exists yet: create one (or use a commit SHA) before enabling this workflow.
+  SITELORE_TOOLS_REF: v0.1.0
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ env.SITELORE_CODE_REPO }}
+          ref: ${{ env.SITELORE_TOOLS_REF }}
+          path: .sitelore-tools
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Build tools
+        working-directory: .sitelore-tools
+        run: npm ci && npm run build -w packages/core && npm run build -w packages/data-tools
+      - name: Check changed entries
+        run: |
+          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          echo "$files"
+          # PRs may only touch entry files; everything else is maintained by hand on main.
+          if echo "$files" | grep -v '^sites/[^/]*/[^/]*\.md$' | grep -q .; then
+            echo "::error::Submissions may only change files under sites/<host>/<id>.md"
+            exit 1
+          fi
+          count=$(echo "$files" | grep -c . || true)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::A submission must change exactly one entry (got $count)"
+            exit 1
+          fi
+          node .sitelore-tools/packages/data-tools/dist/cli.js check --root . $files

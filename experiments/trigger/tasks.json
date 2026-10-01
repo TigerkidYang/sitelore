@@ -1,0 +1,18 @@
+[
+  {
+    "id": "wikipedia",
+    "prompt": "Use the browser to open https://www.wikipedia.org, switch to the English Wikipedia, search for \"Ada Lovelace\", and tell me the date of birth given in the article's infobox."
+  },
+  {
+    "id": "github-release",
+    "prompt": "Use the browser to go to https://github.com/microsoft/playwright and find the version number and publish date of the latest release. Report both."
+  },
+  {
+    "id": "booking",
+    "prompt": "Use the browser on https://www.booking.com to search for hotels in Kyoto, check-in 2026-11-10, check-out 2026-11-12, 2 adults, 1 room. Tell me the names of the first three properties in the results. Do not log in or book anything."
+  },
+  {
+    "id": "trainline",
+    "prompt": "Use the browser on https://www.thetrainline.com to look up one-way train times from London to Manchester for tomorrow morning around 09:00. Tell me the first departure time shown and its price. Do not log in or buy anything."
+  }
+]

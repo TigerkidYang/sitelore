@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.wrangler/
+*.log
+.dev.vars
+experiments/**/runs/
+.env
+.env.*
+*.pem
+coverage/
+.claude/settings.local.json

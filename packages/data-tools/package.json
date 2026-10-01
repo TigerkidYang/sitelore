@@ -1,0 +1,17 @@
+{
+  "name": "@sitelore/data-tools",
+  "version": "0.1.0",
+  "description": "Checks, bundle building and takedown for the Sitelore data repo",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "sitelore-data": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@sitelore/core": "0.1.0"
+  }
+}

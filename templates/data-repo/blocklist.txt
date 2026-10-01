@@ -1,0 +1,2 @@
+# Domains whose site owners asked for removal. One per line; covers subdomains.
+# Add entries with: sitelore-data takedown <domain>

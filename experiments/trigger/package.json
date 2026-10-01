@@ -1,0 +1,8 @@
+{
+  "name": "sitelore-trigger-experiment",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@playwright/mcp": "0.0.82"
+  }
+}

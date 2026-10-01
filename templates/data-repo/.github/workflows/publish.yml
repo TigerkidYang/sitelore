@@ -1,0 +1,49 @@
+name: publish
+
+# Rebuilds bundles/<host>.json and hosts.json and force-pushes them to the
+# `bundles` branch, which clients read from raw.githubusercontent.com.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: publish
+
+env:
+  # The code repo this data repo trusts to run with write access. Must be a repo you control.
+  SITELORE_CODE_REPO: TigerkidYang/sitelore
+  # Pin the tooling to a release tag or commit SHA, never a branch: publish.yml can write to this repo.
+  # No release tag exists yet: create one (or use a commit SHA) before enabling this workflow.
+  SITELORE_TOOLS_REF: v0.1.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5
+        with:
+          repository: ${{ env.SITELORE_CODE_REPO }}
+          ref: ${{ env.SITELORE_TOOLS_REF }}
+          path: .sitelore-tools
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Build tools
+        working-directory: .sitelore-tools
+        run: npm ci && npm run build -w packages/core && npm run build -w packages/data-tools
+      - name: Build bundles
+        run: node .sitelore-tools/packages/data-tools/dist/cli.js build --root . --out "$RUNNER_TEMP/bundles"
+      - name: Push bundles branch
+        run: |
+          cd "$RUNNER_TEMP/bundles"
+          git init -q -b bundles
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Bundles for ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" bundles
