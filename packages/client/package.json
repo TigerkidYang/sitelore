@@ -25,5 +25,21 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TigerkidYang/sitelore.git",
+    "directory": "packages/client"
+  },
+  "homepage": "https://github.com/TigerkidYang/sitelore#readme",
+  "bugs": {
+    "url": "https://github.com/TigerkidYang/sitelore/issues"
+  },
+  "keywords": [
+    "mcp",
+    "browser-agent",
+    "community",
+    "experience"
+  ]
 }

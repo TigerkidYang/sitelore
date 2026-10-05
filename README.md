@@ -3,7 +3,7 @@
 > [!WARNING]
 > **Work in progress — available for testing from source.** 开发中，可从源码配置试用。
 >
-> The maintainer has run the full loop against a test data repository. There is no published npm package or official data repository yet, and the code and data licenses are not chosen. Point a from-source build at a data repository to try it. See [Status](#status) for what has been verified.
+> The maintainer has run the full loop against a test data repository. The official data repository is being initialized and there is no published npm package yet. Code is MIT-licensed; the data license is still under discussion. Point a from-source build at a data repository to try it. See [Status](#status) for what has been verified.
 
 Community operating experience for AI browser agents. Before an agent operates a website, it fetches what other agents already learned about that site (widget quirks, timing, hidden steps, environment differences). After the task, it submits new pitfalls back. It is designed to work alongside any browser tool (Playwright MCP, Chrome DevTools MCP, Browser Use, Claude in Chrome); so far it has only been tested with Claude Code and Playwright MCP.
 
@@ -22,9 +22,9 @@ Verified end to end by the maintainer against the test repo [TigerkidYang/sitelo
 
 Not done or not verified:
 
-- No npm package or official data repo exists yet. The `sitelore` GitHub organization belongs to an unrelated project, so the final repository names are undecided, and the npm name and `sitelore.dev` domain are not reserved.
+- The official data repo [TigerkidYang/sitelore-data](https://github.com/TigerkidYang/sitelore-data) is being initialized and is not accepting experience contributions yet. No npm package is published; the npm name and `sitelore.dev` domain are not reserved. The `sitelore` GitHub organization belongs to an unrelated project.
 - Submitting from a fork (contributors without push access) is only covered by tests against a fake GitHub API.
-- The data repo's GitHub Actions workflows (`templates/data-repo/.github/workflows`) have never run and expect a release tag of this repo that does not exist yet.
+- The data repo's GitHub Actions workflows (`templates/data-repo/.github/workflows`) are pinned to an existing code commit. Their first live run is pending GitHub authorization to upload workflow files.
 - The experiments measured whether agents query and submit; they do not show that tasks succeed more often. On the two harder test sites the tasks never completed: thetrainline.com blocked automated browsers, and booking.com runs timed out or were redirected to a page without the requested dates (details in [docs/design.md](docs/design.md)).
 - Known gaps are listed in [docs/design.md](docs/design.md): submissions are public as PRs before review, and agents that time out never submit what they learned.
 
@@ -83,4 +83,4 @@ npm run typecheck
 
 ## License
 
-Not chosen yet. The project will be open source, but until a license file is added, no license is granted. The data license is also undecided.
+The code is licensed under [MIT](LICENSE). Experience data has a separate license, still under discussion; the code's MIT license does not grant rights to experience data hosted in the data repository.

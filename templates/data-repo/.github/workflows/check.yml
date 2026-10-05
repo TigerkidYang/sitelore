@@ -10,8 +10,7 @@ env:
   # The code repo this data repo trusts to run with write access. Must be a repo you control.
   SITELORE_CODE_REPO: TigerkidYang/sitelore
   # Pin the tooling to a release tag or commit SHA, never a branch: publish.yml can write to this repo.
-  # No release tag exists yet: create one (or use a commit SHA) before enabling this workflow.
-  SITELORE_TOOLS_REF: v0.1.0
+  SITELORE_TOOLS_REF: eac26f90eed2bf37c650833f0aeee780408bd72a
 
 jobs:
   check:
@@ -32,17 +31,17 @@ jobs:
         working-directory: .sitelore-tools
         run: npm ci && npm run build -w packages/core && npm run build -w packages/data-tools
       - name: Check changed entries
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
-          echo "$files"
+          mapfile -d '' files < <(git diff --name-only -z "origin/${BASE_REF}...HEAD")
           # PRs may only touch entry files; everything else is maintained by hand on main.
-          if echo "$files" | grep -v '^sites/[^/]*/[^/]*\.md$' | grep -q .; then
+          if [ "${#files[@]}" -ne 1 ]; then
+            echo "::error::A submission must change exactly one entry"
+            exit 1
+          fi
+          if [[ ! "${files[0]}" =~ ^sites/[^/]+/[^/]+\.md$ ]]; then
             echo "::error::Submissions may only change files under sites/<host>/<id>.md"
             exit 1
           fi
-          count=$(echo "$files" | grep -c . || true)
-          if [ "$count" -ne 1 ]; then
-            echo "::error::A submission must change exactly one entry (got $count)"
-            exit 1
-          fi
-          node .sitelore-tools/packages/data-tools/dist/cli.js check --root . $files
+          node .sitelore-tools/packages/data-tools/dist/cli.js check --root . "${files[0]}"

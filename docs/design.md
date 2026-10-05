@@ -36,12 +36,12 @@ flowchart LR
 
 两个仓库分开：
 
-- **代码仓库**（目前是 `TigerkidYang/sitelore`；代码许可证待定）：monorepo，包含
+- **代码仓库**（`TigerkidYang/sitelore`；代码许可证 MIT）：monorepo，包含
   - `packages/core`：条目解析、脱敏规则、危险动作过滤和 GitHub PR 流程。客户端和数据仓库检查共用。
   - `packages/client`：运行在用户本地的 MCP server，加上 `sitelore init / off / on / status` 命令行。
   - `packages/data-tools`：数据仓库的检查、生成数据包、下架。
   - `templates/data-repo`：数据仓库的骨架，包括 CI 工作流、审查用的 sub agent 和 `/review-submissions` 命令。
-- **数据仓库**（数据，协议待定）：只放条目，提交历史只来自工具生成的 PR。正式仓库还没建，目前用测试仓库 `TigerkidYang/sitelore-data-test`。
+- **数据仓库**（数据，协议待定）：只放条目，提交历史只来自工具生成的 PR。正式仓库 `TigerkidYang/sitelore-data` 已创建，正在初始化，暂不接收经验；测试仍使用 `TigerkidYang/sitelore-data-test`。
 
 > GitHub 组织 `sitelore` 已在 2026-09-28 被一个无关项目注册（PRD 决策记录里「GitHub 组织名未被占用」已不成立），所以代码和数据仓库的正式位置待定。客户端在开发阶段不预设数据仓库，未配置时查询会说明未配置；只有配置了数据仓库或本地记录模式、且贡献开启时才提供提交工具。
 

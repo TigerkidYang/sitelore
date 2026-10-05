@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Sitelore is a work-in-progress prototype: it runs end to end against the test data repo `TigerkidYang/sitelore-data-test`, but there is no published npm package or official data repo yet (the `sitelore` GitHub org belongs to an unrelated project, so the client must not default to it). The README's Status section lists what works and what doesn't; keep it accurate when that changes. `README.md` also describes the layout (npm workspaces: `packages/core`, `packages/client`, `packages/data-tools`, plus `templates/data-repo` and `experiments/trigger`).
+Sitelore is a work-in-progress prototype: it runs end to end against the test data repo `TigerkidYang/sitelore-data-test`, but there is no published npm package yet and the official `TigerkidYang/sitelore-data` repo is still being initialized (the `sitelore` GitHub org belongs to an unrelated project, so the client must not default to it). The README's Status section lists what works and what doesn't; keep it accurate when that changes. `README.md` also describes the layout (npm workspaces: `packages/core`, `packages/client`, `packages/data-tools`, plus `templates/data-repo` and `experiments/trigger`).
 
 Architecture is settled: a code repo and a data repo, with the MCP server running locally and opening PRs directly using the user's existing GitHub credentials. Without credentials, skip contribution and continue the user's task. Model review runs on maintainers' machines; data checks and static publication run in the data repo's GitHub Actions. Do not add a hosted submission, query or model-review service, including as a fallback or future plan.
 
@@ -41,4 +41,4 @@ Key constraints that shape any design:
 - Privacy/legal: store only how-to-operate knowledge — no page content, screenshots, DOM, or user data. PII must be removed locally by rules before upload (git history makes post-merge deletion ineffective). No anti-bot/CAPTCHA/risk-control bypass experience. Support fast takedown by domain.
 - Client is open source; contribution is on by default with a one-click off switch. Contributions use the user's public GitHub identity; the notice must say so. No local credentials means no contribution.
 
-`packages/core` and `packages/client` are marked `"private": true` and have no `license` field on purpose: the npm name and the license are not decided yet. Remove `private` only when actually publishing.
+Code is MIT-licensed. Experience data licensing is separate and still under discussion. `packages/core` and `packages/client` remain `"private": true` until publication; only the bundled client is intended for npm. Remove its `private` flag only when actually publishing.

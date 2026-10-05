@@ -1,6 +1,6 @@
 name: publish
 
-# Rebuilds bundles/<host>.json and hosts.json and force-pushes them to the
+# Rebuilds bundles/<host>.json and hosts.json and commits them to the
 # `bundles` branch, which clients read from raw.githubusercontent.com.
 
 on:
@@ -17,8 +17,7 @@ env:
   # The code repo this data repo trusts to run with write access. Must be a repo you control.
   SITELORE_CODE_REPO: TigerkidYang/sitelore
   # Pin the tooling to a release tag or commit SHA, never a branch: publish.yml can write to this repo.
-  # No release tag exists yet: create one (or use a commit SHA) before enabling this workflow.
-  SITELORE_TOOLS_REF: v0.1.0
+  SITELORE_TOOLS_REF: eac26f90eed2bf37c650833f0aeee780408bd72a
 
 jobs:
   publish:
@@ -39,11 +38,25 @@ jobs:
       - name: Build bundles
         run: node .sitelore-tools/packages/data-tools/dist/cli.js build --root . --out "$RUNNER_TEMP/bundles"
       - name: Push bundles branch
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd "$RUNNER_TEMP/bundles"
           git init -q -b bundles
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          gh auth setup-git
+          status=0
+          git ls-remote --exit-code --heads origin bundles > /dev/null || status=$?
+          if [ "$status" -eq 0 ]; then
+            git fetch --depth=1 origin bundles
+            # Keep freshly generated files, but use the previous bundle commit as parent.
+            git reset --mixed FETCH_HEAD
+          elif [ "$status" -ne 2 ]; then
+            exit "$status"
+          fi
           git add -A
+          if git diff --cached --quiet; then exit 0; fi
           git commit -q -m "Bundles for ${GITHUB_SHA}"
-          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" bundles
+          git push origin HEAD:bundles
