@@ -14,6 +14,14 @@ describe("local configuration", () => {
   });
   afterEach(() => vi.unstubAllEnvs());
 
+  it("uses the official data repository on a fresh installation", () => {
+    expect(loadConfig()).toMatchObject({ firstRun: true, config: {
+      dataRepo: "TigerkidYang/sitelore-data",
+      bundleSource: "https://raw.githubusercontent.com/TigerkidYang/sitelore-data/bundles/",
+      contribute: true,
+    } });
+  });
+
   it("discards obsolete routing settings while preserving the contribution switch", () => {
     writeFileSync(file, JSON.stringify({
       dataRepo: "owner/data",

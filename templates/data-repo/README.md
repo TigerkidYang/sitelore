@@ -8,4 +8,10 @@ The Sitelore MCP server runs on the contributor's machine and opens PRs with the
 
 Site owners who want their site's entries removed: open an issue or contact the maintainers, and the domain will be taken down and blocklisted.
 
-Data license: TBD.
+## License and contributions
+
+Experience entries and the repository's supporting files are licensed under [MIT](LICENSE). Commercial use, modification and redistribution are permitted under that license; retain the copyright and license notices when copying or distributing the data or substantial portions of it.
+
+By submitting an entry or correction, you offer your contribution under the MIT license. Submit only operating knowledge you are entitled to share, without copying site content or including personal data. Contributors retain their rights; no copyright transfer is required. Attribution history is available in the entry's Git history and pull requests.
+
+Published bundles include a `LICENSE` file. Keep it with redistributed datasets.

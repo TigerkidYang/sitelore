@@ -7,7 +7,7 @@ export interface Config {
   contribute: boolean;
   /** Version of the contribution notice already shown to the user. */
   noticeVersion: string;
-  /** Data repo, "owner/name". Empty until configured. */
+  /** Data repo, "owner/name". Defaults to the official community repository. */
   dataRepo: string;
   /** Where bundles/<host>.json and bundles/hosts.json are served from: an https URL or a local directory. */
   bundleSource: string;
@@ -15,18 +15,14 @@ export interface Config {
   recordOnly: boolean;
 }
 
-/**
- * Development build: there is no official data repo yet, so
- * nothing is assumed. Without configuration, lookups report that Sitelore is not
- * configured and the submission tools are not offered. Submissions use only the
- * user's local GitHub credentials. (The `sitelore` GitHub org belongs to
- * an unrelated project.)
- */
+export const DEFAULT_DATA_REPO = "TigerkidYang/sitelore-data";
+
+/** Submissions use only the user's local GitHub credentials. */
 export function bundleSourceFor(dataRepo: string): string {
   return dataRepo ? `https://raw.githubusercontent.com/${dataRepo}/bundles/` : "";
 }
 
-export function defaults(dataRepo = ""): Config {
+export function defaults(dataRepo = DEFAULT_DATA_REPO): Config {
   return {
     contribute: true,
     noticeVersion: "",

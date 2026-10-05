@@ -2,17 +2,17 @@
   "name": "sitelore",
   "version": "0.1.0",
   "description": "Community operating experience for AI browser agents, as an MCP server",
-  "private": true,
   "type": "module",
   "bin": {
     "sitelore": "dist/cli.js"
   },
   "files": [
     "dist",
-    "skill"
+    "skill",
+    "THIRD_PARTY_NOTICES.txt"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node ../../scripts/build-notices.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -41,5 +41,9 @@
     "browser-agent",
     "community",
     "experience"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

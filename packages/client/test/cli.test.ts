@@ -28,7 +28,7 @@ describe.skipIf(!existsSync(cli))("built CLI", () => {
     expect(init.stdout).toContain("Your GitHub username will be publicly associated");
     const status = JSON.parse(run("status").stdout);
     expect(status.contribute).toBe(true);
-    expect(status.noticeVersion).toBe("github-v1");
+    expect(status.noticeVersion).toBe("github-mit-v1");
     expect(status).not.toHaveProperty("channel");
     expect(status).not.toHaveProperty("intakeUrl");
   }, 30_000);

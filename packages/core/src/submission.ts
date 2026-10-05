@@ -187,6 +187,7 @@ export function describeSubmission(p: PreparedSubmission, clientVersion: string)
     `Host: ${p.host}`,
     `Entry: \`${p.path}\``,
     `Client: sitelore ${clientVersion}`,
+    "License: MIT (see the data repository's LICENSE)",
   ];
   if (p.reason) lines.push("", "Reason:", "", quote(p.reason));
   if (p.flags.length) {

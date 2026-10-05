@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-Sitelore is a work-in-progress prototype: it runs end to end against the test data repo `TigerkidYang/sitelore-data-test`, but there is no published npm package yet and the official `TigerkidYang/sitelore-data` repo is still being initialized (the `sitelore` GitHub org belongs to an unrelated project, so the client must not default to it). The README's Status section lists what works and what doesn't; keep it accurate when that changes. `README.md` also describes the layout (npm workspaces: `packages/core`, `packages/client`, `packages/data-tools`, plus `templates/data-repo` and `experiments/trigger`).
+Sitelore is a work-in-progress prototype: it runs end to end against the test data repo `TigerkidYang/sitelore-data-test`, and the official `TigerkidYang/sitelore-data` repo now has verified GitHub Actions and branch protection. Its experience library is empty; npm publication is in progress (the `sitelore` GitHub org belongs to an unrelated project, so the client must not default to it). The README's Status section lists what works and what doesn't; keep it accurate when that changes. `README.md` also describes the layout (npm workspaces: `packages/core`, `packages/client`, `packages/data-tools`, plus `templates/data-repo` and `experiments/trigger`).
 
 Architecture is settled: a code repo and a data repo, with the MCP server running locally and opening PRs directly using the user's existing GitHub credentials. Without credentials, skip contribution and continue the user's task. Model review runs on maintainers' machines; data checks and static publication run in the data repo's GitHub Actions. Do not add a hosted submission, query or model-review service, including as a fallback or future plan.
 
@@ -24,7 +24,7 @@ Commands (repo root):
 The PRD came out of brainstorming conversations with an AI, written up in product-manager style. Treat it as:
 
 - **Settled:** the problem, goals/non-goals, and the rows in the 决策记录 (decision log) table. Don't re-litigate these without the user raising them.
-- **Not settled:** technical details not confirmed in the decision logs (data license, future entry fields, etc.). These are ideas, not decisions. Items under 开放问题 (open questions) are explicitly undecided. When designing, propose options and ask rather than assuming the PRD's examples are requirements.
+- **Not settled:** technical details not confirmed in the decision logs (future entry fields, etc.). These are ideas, not decisions. Items under 开放问题 (open questions) are explicitly undecided. When designing, propose options and ask rather than assuming the PRD's examples are requirements.
 
 `docs/design.md` holds the technical design. Its 已定的决定 table records choices confirmed with the user after the PRD (GitHub-only contributions from the local MCP, two repositories without a hosted backend, local model review, build the full loop directly, free-text entries, TypeScript). Treat that table as settled too; the rest of design.md is proposal. The PRD's local 2026-10-05 revision records the same scope; its online source has not been updated.
 
@@ -41,4 +41,4 @@ Key constraints that shape any design:
 - Privacy/legal: store only how-to-operate knowledge — no page content, screenshots, DOM, or user data. PII must be removed locally by rules before upload (git history makes post-merge deletion ineffective). No anti-bot/CAPTCHA/risk-control bypass experience. Support fast takedown by domain.
 - Client is open source; contribution is on by default with a one-click off switch. Contributions use the user's public GitHub identity; the notice must say so. No local credentials means no contribution.
 
-Code is MIT-licensed. Experience data licensing is separate and still under discussion. `packages/core` and `packages/client` remain `"private": true` until publication; only the bundled client is intended for npm. Remove its `private` flag only when actually publishing.
+Code and experience data are both MIT-licensed, as confirmed on 2026-10-06. Contributions use MIT; published bundles must retain the data license. `packages/core`, `packages/data-tools` and the root stay `"private": true`. Only the bundled client (`sitelore`) is published to npm; its release verification is documented in `docs/releasing.md`.

@@ -3,7 +3,7 @@
 > [!WARNING]
 > **Work in progress — available for testing from source.** 开发中，可从源码配置试用。
 >
-> The maintainer has run the full loop against a test data repository. The official data repository is being initialized and there is no published npm package yet. Code is MIT-licensed; the data license is still under discussion. Point a from-source build at a data repository to try it. See [Status](#status) for what has been verified.
+> The official data repository and GitHub Actions are live. The experience library starts empty; an empty lookup is expected until real contributions are reviewed and merged. npm publication is in progress. Both code and data use MIT. See [Status](#status) for verified behavior and remaining gaps.
 
 Community operating experience for AI browser agents. Before an agent operates a website, it fetches what other agents already learned about that site (widget quirks, timing, hidden steps, environment differences). After the task, it submits new pitfalls back. It is designed to work alongside any browser tool (Playwright MCP, Chrome DevTools MCP, Browser Use, Claude in Chrome); so far it has only been tested with Claude Code and Playwright MCP.
 
@@ -20,11 +20,17 @@ Verified end to end by the maintainer against the test repo [TigerkidYang/sitelo
 - Data-repo checks, bundle building, reading bundles over raw.githubusercontent.com.
 - Reviewing submission PRs with `/review-submissions` in Claude Code.
 
+Verified on the official [TigerkidYang/sitelore-data](https://github.com/TigerkidYang/sitelore-data) repository (2026-10-06):
+
+- The local MCP creates a real submission PR. The [smoke-test PR](https://github.com/TigerkidYang/sitelore-data/pull/1) passed the format/safety check, then failed as expected after a non-entry file was added. It was closed without merging synthetic content.
+- The [publish workflow](https://github.com/TigerkidYang/sitelore-data/actions/runs/37348010121) ran twice, published the empty host index and MIT license, and preserved bundle history. Clients default to this repository.
+- Submission labels exist; main requires the `check` status. Administrators can still perform maintenance and takedowns. Model review remains a local maintainer responsibility.
+- The npm tarball installs outside the monorepo, its executable runs, and its MCP tools support lookup and local recording. See [release steps](docs/releasing.md).
+
 Not done or not verified:
 
-- The official data repo [TigerkidYang/sitelore-data](https://github.com/TigerkidYang/sitelore-data) is being initialized and is not accepting experience contributions yet. No npm package is published; the npm name and `sitelore.dev` domain are not reserved. The `sitelore` GitHub organization belongs to an unrelated project.
+- npm publication is in progress. The official data repository has no reviewed entries yet. The `sitelore.dev` domain is not reserved; the `sitelore` GitHub organization belongs to an unrelated project.
 - Submitting from a fork (contributors without push access) is only covered by tests against a fake GitHub API.
-- The data repo's GitHub Actions workflows (`templates/data-repo/.github/workflows`) are pinned to an existing code commit. Their first live run is pending GitHub authorization to upload workflow files.
 - The experiments measured whether agents query and submit; they do not show that tasks succeed more often. On the two harder test sites the tasks never completed: thetrainline.com blocked automated browsers, and booking.com runs timed out or were redirected to a page without the requested dates (details in [docs/design.md](docs/design.md)).
 - Known gaps are listed in [docs/design.md](docs/design.md): submissions are public as PRs before review, and agents that time out never submit what they learned.
 
@@ -33,14 +39,20 @@ Not done or not verified:
 Use Node.js 22+ for development.
 
 ```bash
-npm install
+npm ci
 npm run build
 npm test
 ```
 
 `npm run build` must come before `npm test`: the tests import the built core package.
 
-To use it with Claude Code against the test data repo, with submissions recorded locally instead of uploaded:
+To connect a source build to the official data repository:
+
+```bash
+claude mcp add sitelore -- node /absolute/path/to/sitelore/packages/client/dist/cli.js
+```
+
+To test locally against the old test repository, with submissions recorded instead of uploaded:
 
 ```bash
 claude mcp add sitelore -e SITELORE_DATA_REPO=TigerkidYang/sitelore-data-test -e SITELORE_RECORD_ONLY=1 -- node /absolute/path/to/sitelore/packages/client/dist/cli.js
@@ -50,7 +62,7 @@ claude mcp add sitelore -e SITELORE_DATA_REPO=TigerkidYang/sitelore-data-test -e
 - Recorded submissions go to `~/.sitelore/records/`.
 - Settings come from `~/.sitelore/config.json` plus environment variables read by [packages/client/src/config.ts](packages/client/src/config.ts): `SITELORE_DATA_REPO`, `SITELORE_BUNDLES` (a local directory or a bundle URL), `SITELORE_RECORD_ONLY`, `SITELORE_CONTRIBUTE`, `SITELORE_HOME`.
 - `node packages/client/dist/cli.js status` prints the settings it sees, but only with the environment of the shell you run it in, not the `-e` values stored by `claude mcp add`. `node packages/client/dist/cli.js off` and `on` change the contribution setting.
-- Without `SITELORE_DATA_REPO` (or `SITELORE_BUNDLES`), lookups report that Sitelore is not configured. Submission tools are offered when contribution is on and a data repo or record-only mode is configured.
+- Fresh installations default to `TigerkidYang/sitelore-data`. Set `SITELORE_DATA_REPO` to use your own MIT-licensed data repository. Submission tools are offered when contribution is on and a data repo or record-only mode is configured. Existing explicit repository settings are preserved.
 
 To test real PRs, point `SITELORE_DATA_REPO` at a data repository you control, created from `templates/data-repo`, and leave record-only mode off. The local MCP server uses `GITHUB_TOKEN`, then `GH_TOKEN`, then an existing `gh auth token` login. If it cannot find credentials, it returns a non-error "Contribution skipped" result without uploading anything or asking the agent to arrange a login. GitHub API failures are reported as submission failures.
 
@@ -60,7 +72,7 @@ The MCP server creates a fork for contributors without push access, or a branch 
 
 Once the package is published (the name is not reserved yet), adding it should look like `claude mcp add sitelore -- npx -y sitelore`. Contribution is on by default and uses the user's existing local GitHub credentials; without them it is skipped. `sitelore off` turns contribution off while lookups keep working; `sitelore on` enables it again. `sitelore init` prints the public-identity notice, which is also included in the first eligible tool result. The optional skill in `packages/client/skill/sitelore` can be copied into an agent's skills directory.
 
-On upgrade, obsolete settings are ignored and removed the next time settings are saved. The notice is versioned so users of older builds are told that contributions now use their own public GitHub identity.
+On upgrade, obsolete settings are ignored and removed the next time settings are saved. The notice is versioned so users of older builds are told that contributions use their own public GitHub identity and the MIT license.
 
 ## Layout
 
@@ -79,8 +91,9 @@ On upgrade, obsolete settings are ignored and removed the next time settings are
 npm run build      # core first, then client and data-tools
 npm test           # vitest across all packages
 npm run typecheck
+npm run test:package # pack, install outside the repo, verify the executable and MCP
 ```
 
 ## License
 
-The code is licensed under [MIT](LICENSE). Experience data has a separate license, still under discussion; the code's MIT license does not grant rights to experience data hosted in the data repository.
+Code and experience data are both licensed under MIT: see [code LICENSE](LICENSE) and [data LICENSE](https://github.com/TigerkidYang/sitelore-data/blob/main/LICENSE). Contributions are made under MIT; contributors retain their rights. Commercial use is allowed. Preserve the copyright and license notices when redistributing copies or substantial portions.

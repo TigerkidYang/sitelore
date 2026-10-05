@@ -1,6 +1,6 @@
 /** Text shown to agents: MCP server instructions and tool descriptions (PRD F4). */
 
-export const CONTRIBUTION_NOTICE_VERSION = "github-v1";
+export const CONTRIBUTION_NOTICE_VERSION = "github-mit-v1";
 
 export const INSTRUCTIONS_READ = `Sitelore is a shared, community-maintained library of operating experience for websites: widget quirks, timing, hidden steps and environment differences that other agents already ran into.
 
@@ -13,6 +13,7 @@ export const GET_DESCRIPTION = `Fetch community operating experience for a websi
 
 export const WRITE_GUIDE = `
 What makes a good entry:
+- Share only operating knowledge you are entitled to contribute under the MIT license. Contributions are public and permit commercial reuse.
 - One pitfall per entry: what went wrong, and what worked instead. Concrete and short (usually 2-6 sentences).
 - Things that are not obvious from looking at the page: a date field that only accepts typed input, a button that only works after scrolling it into view, a result list that loads late, a modal that must be closed first, a setting hidden on another page, a flow that differs when logged in or in another region/language.
 - Refer to controls by their visible label or role ("the 'Search flights' button", "the second date field labeled 'Return'"), not by pixel coordinates or brittle selectors alone. If you mention a position ("the third option"), also say what that option is.
@@ -37,6 +38,6 @@ ${WRITE_GUIDE}`;
 /** Explain the public GitHub identity used for contributions, including after an upgrade. */
 export function firstRunNotice(): string {
   return `【Sitelore 首次使用告知 / First-run notice — please relay this to the user】
-Sitelore 会在 agent 操作网站前取回社区经验；任务结束后，agent 默认自动总结值得分享的坑。MCP 在本地按规则去除个人信息、过滤危险内容，然后使用本机的 GitHub 凭据，以你的 GitHub 身份创建公开 pull request，等待审查后合入。你的 GitHub 用户名和提交内容会公开关联。没有可用凭据时会跳过贡献，查询照常工作。运行 \`sitelore off\` 可关闭自动提交。
-Sitelore fetches community notes before your agent operates a website. By default, it scrubs and screens new pitfalls locally, then uses your existing local GitHub credentials to open public pull requests for review. Your GitHub username will be publicly associated with the submitted notes. Without credentials, contribution is skipped and lookups keep working. Run \`sitelore off\` to stop contributing.`;
+Sitelore 会在 agent 操作网站前取回社区经验；任务结束后，agent 默认自动总结值得分享的坑。MCP 在本地按规则去除个人信息、过滤危险内容，然后使用本机的 GitHub 凭据，以你的 GitHub 身份创建公开 pull request，等待审查后合入。你的 GitHub 用户名和提交内容会公开关联。经验贡献采用 MIT 许可证，允许商业使用和再分发；只提交你有权分享的操作知识。没有可用凭据时会跳过贡献，查询照常工作。运行 \`sitelore off\` 可关闭自动提交。
+Sitelore fetches community notes before your agent operates a website. By default, it scrubs and screens new pitfalls locally, then uses your existing local GitHub credentials to open public pull requests for review. Your GitHub username will be publicly associated with the submitted notes. Contributions are MIT-licensed, allowing commercial use and redistribution; share only operating knowledge you are entitled to contribute. Without credentials, contribution is skipped and lookups keep working. Run \`sitelore off\` to stop contributing.`;
 }

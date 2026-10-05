@@ -202,8 +202,8 @@ describe("MCP server", () => {
     expect(ctx.gh.prs[0]!.title).toContain("[amazon.com]");
   });
 
-  it("fails closed when nothing is configured (development build)", async () => {
-    const { client, call } = await connect(defaults(), { fetch: ctx.routedFetch, apiBase: API, githubToken: async () => "user-token" });
+  it("fails closed when the data repository is explicitly empty", async () => {
+    const { client, call } = await connect(defaults(""), { fetch: ctx.routedFetch, apiBase: API, githubToken: async () => "user-token" });
     const r = await call("get_site_experience", { url: "amazon.com" });
     expect(r.text).toContain("not configured");
     expect((await client.listTools()).tools.map((t) => t.name)).toEqual(["get_site_experience"]);
@@ -213,7 +213,7 @@ describe("MCP server", () => {
   it("refuses to open PRs without a configured data repo", async () => {
     const r = await submit(
       { kind: "new", site: "booking.com", title: "Date picker", body: "Type the date instead of using the calendar." },
-      defaults(),
+      defaults(""),
       { fetch: ctx.routedFetch, apiBase: API, githubToken: async () => "user-token" },
     );
     expect(r.status).toBe("skipped");

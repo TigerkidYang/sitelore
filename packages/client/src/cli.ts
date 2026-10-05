@@ -5,7 +5,6 @@ import { createServer } from "./server.js";
 import { VERSION } from "./version.js";
 
 const HELP = `sitelore ${VERSION} — community operating experience for AI browser agents
-(work in progress: there is no official data repo yet, and this package is not on npm)
 
 Usage:
   sitelore            Start the MCP server on stdio (what your agent runs)
@@ -14,8 +13,10 @@ Usage:
   sitelore on         Resume contributing
   sitelore status     Show current settings
 
-Add a from-source build to Claude Code (see README.md):
-  claude mcp add sitelore -e SITELORE_DATA_REPO=<owner/repo> -e SITELORE_RECORD_ONLY=1 -- node <path>/packages/client/dist/cli.js
+Add to Claude Code after installing the npm package (see README.md):
+  claude mcp add sitelore -- npx -y sitelore
+
+Official data repository: TigerkidYang/sitelore-data. Code and data use MIT.
 
 Configuration comes from ~/.sitelore/config.json plus SITELORE_* environment
 variables; "status" only sees the environment of the shell it runs in.

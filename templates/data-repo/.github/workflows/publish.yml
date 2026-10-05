@@ -36,7 +36,9 @@ jobs:
         working-directory: .sitelore-tools
         run: npm ci && npm run build -w packages/core && npm run build -w packages/data-tools
       - name: Build bundles
-        run: node .sitelore-tools/packages/data-tools/dist/cli.js build --root . --out "$RUNNER_TEMP/bundles"
+        run: |
+          node .sitelore-tools/packages/data-tools/dist/cli.js build --root . --out "$RUNNER_TEMP/bundles"
+          cp LICENSE "$RUNNER_TEMP/bundles/LICENSE"
       - name: Push bundles branch
         env:
           GH_TOKEN: ${{ github.token }}

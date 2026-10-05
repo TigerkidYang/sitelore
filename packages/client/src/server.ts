@@ -90,7 +90,7 @@ export function createServer(opts: ServerOptions): McpServer {
       if (!config.bundleSource) {
         logEvent({ tool: "get_site_experience", host, error: "not_configured" });
         return text(
-          "Sitelore is not configured with a data repository (development build: set SITELORE_DATA_REPO or SITELORE_BUNDLES). Continue without it.",
+          "Sitelore is not configured with a data repository (set SITELORE_DATA_REPO or SITELORE_BUNDLES). Continue without it.",
         );
       }
 
