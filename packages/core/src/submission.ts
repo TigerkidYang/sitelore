@@ -76,8 +76,8 @@ function screen(entry: Entry, extra: string | undefined): DangerHit[] {
 
 /**
  * Scrubs every text field of a raw submission and screens it, without needing
- * the existing entry. The client runs this before anything leaves the machine;
- * the receiving side then runs prepareNew / prepareCorrection again.
+ * the existing entry. The local MCP server runs this before any network calls,
+ * then prepares the entry after loading the existing version for corrections.
  */
 export function sanitizeSubmission(sub: Submission): { submission: Submission; scrubbed: string[]; flags: DangerHit[] } {
   const host = normalizeHost(sub.site);
@@ -179,14 +179,13 @@ export function prepareCorrection(
 }
 
 /** Title and description for the pull request that carries a prepared submission. */
-export function describeSubmission(p: PreparedSubmission, channel: string, clientVersion: string): { title: string; body: string } {
+export function describeSubmission(p: PreparedSubmission, clientVersion: string): { title: string; body: string } {
   const verb = p.kind === "new" ? "Add" : p.entry.status === "outdated" ? "Mark outdated" : "Correct";
   const title = `[${p.host}] ${verb}: ${p.entry.title}`.slice(0, 200);
   const lines = [
     `Kind: ${p.kind}`,
     `Host: ${p.host}`,
     `Entry: \`${p.path}\``,
-    `Channel: ${channel}`,
     `Client: sitelore ${clientVersion}`,
   ];
   if (p.reason) lines.push("", "Reason:", "", quote(p.reason));

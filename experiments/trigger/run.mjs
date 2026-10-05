@@ -44,7 +44,6 @@ function prepare(model, variant, task, rep) {
   mkdirSync(join(work, ".claude"), { recursive: true });
   const home = join(dir, "sitelore-home");
   mkdirSync(home, { recursive: true });
-  writeFileSync(join(home, "config.json"), JSON.stringify({ noticeShown: true }));
 
   // Passed with --settings: project settings are ignored in an untrusted workspace.
   const settings = { permissions: { allow: ["mcp__playwright", "mcp__sitelore", "Skill"] } };

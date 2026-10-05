@@ -1,6 +1,7 @@
 // Calls one tool on the built sitelore MCP server over stdio, with the real environment.
 //   node call.mjs <tool> '<json args>'
-// Configure with SITELORE_* env vars (SITELORE_DATA_REPO, SITELORE_CHANNEL, SITELORE_INTAKE_URL, SITELORE_HOME...).
+// Configure with SITELORE_* env vars (SITELORE_DATA_REPO, SITELORE_RECORD_ONLY, SITELORE_HOME...).
+// Real PRs use the MCP process's own GITHUB_TOKEN, GH_TOKEN or existing gh login.
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";

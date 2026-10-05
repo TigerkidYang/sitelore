@@ -2,7 +2,7 @@ import { lookupHosts } from "./domain.js";
 
 /**
  * Minimal GitHub REST client for opening submission PRs against the data repo.
- * Uses only fetch, so it runs in Node and in Cloudflare Workers.
+ * Uses fetch to talk directly to GitHub from the local MCP server.
  */
 
 export interface GitHubOptions {
@@ -29,8 +29,7 @@ export class GitHub {
 
   constructor(private readonly opts: GitHubOptions) {
     this.base = (opts.apiBase ?? "https://api.github.com").replace(/\/$/, "");
-    // Always call through a closure: Workers throw "Illegal invocation" when the global fetch
-    // is called as a method of another object (this.fetchImpl(...)).
+    // Preserve the fetch implementation's receiver rather than binding it to this client.
     const f = opts.fetch ?? fetch;
     this.fetchImpl = (input, init) => f(input, init);
   }

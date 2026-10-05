@@ -5,8 +5,7 @@
   "workspaces": [
     "packages/core",
     "packages/client",
-    "packages/data-tools",
-    "services/intake"
+    "packages/data-tools"
   ],
   "scripts": {
     "build": "npm run build -w packages/core && npm run build -w packages/client -w packages/data-tools",

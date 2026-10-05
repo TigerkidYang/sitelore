@@ -1,19 +1,17 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { loadConfig, saveConfig, homeDir } from "./config.js";
-import { firstRunNotice } from "./guidance.js";
+import { CONTRIBUTION_NOTICE_VERSION, firstRunNotice } from "./guidance.js";
 import { createServer } from "./server.js";
 import { VERSION } from "./version.js";
 
 const HELP = `sitelore ${VERSION} — community operating experience for AI browser agents
-(work in progress: there is no public data repo or intake service yet, and this package is not on npm)
+(work in progress: there is no official data repo yet, and this package is not on npm)
 
 Usage:
   sitelore            Start the MCP server on stdio (what your agent runs)
   sitelore init       Show the contribution notice and how to add Sitelore to your agent
   sitelore off        Stop contributing (lookups keep working)
   sitelore on         Resume contributing
-  sitelore github on  Submit as PRs from your own GitHub account (public under your name)
-  sitelore github off Submit through the Sitelore intake service (default)
   sitelore status     Show current settings
 
 Add a from-source build to Claude Code (see README.md):
@@ -21,6 +19,8 @@ Add a from-source build to Claude Code (see README.md):
 
 Configuration comes from ~/.sitelore/config.json plus SITELORE_* environment
 variables; "status" only sees the environment of the shell it runs in.
+Contributions use your own GitHub account through GITHUB_TOKEN, GH_TOKEN or an
+existing gh login. Without local credentials, contribution is skipped.
 `;
 
 async function main(): Promise<void> {
@@ -33,9 +33,9 @@ async function main(): Promise<void> {
       return;
     }
     case "init":
-      console.log(firstRunNotice(loadConfig().config.channel !== "intake") + "\n");
+      console.log(firstRunNotice() + "\n");
       console.log(HELP);
-      saveConfig({ noticeShown: true });
+      saveConfig({ noticeVersion: CONTRIBUTION_NOTICE_VERSION });
       return;
     case "off":
       saveConfig({ contribute: false });
@@ -43,23 +43,8 @@ async function main(): Promise<void> {
       return;
     case "on":
       saveConfig({ contribute: true });
-      console.log("Contribution is on. Thank you!");
+      console.log("Contribution is on. Submissions use your own GitHub account and are public under your name; without local credentials they are skipped.");
       return;
-    case "github": {
-      const on = process.argv[3] === "on";
-      if (!on && process.argv[3] !== "off") {
-        console.error(HELP);
-        process.exitCode = 1;
-        return;
-      }
-      saveConfig({ channel: on ? "auto" : "intake" });
-      console.log(
-        on
-          ? "Submissions will be opened as pull requests from your own GitHub account (via GITHUB_TOKEN or `gh auth token`). Your GitHub username will be public on those PRs."
-          : "Submissions will go through the Sitelore intake service; your GitHub account is not used.",
-      );
-      return;
-    }
     case "status": {
       const { config } = loadConfig();
       console.log(JSON.stringify({ version: VERSION, home: homeDir(), ...config }, null, 2));

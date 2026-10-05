@@ -2,7 +2,7 @@ import { stripInvisible } from "./normalize.js";
 
 /**
  * Rule-based PII / secret removal, run locally before anything is uploaded and
- * again by the intake service and the data-repo checks.
+ * again by the data-repo checks.
  *
  * Matches are replaced with placeholders rather than rejected, so a useful
  * entry that happens to mention an order number still gets through. Scrubbing

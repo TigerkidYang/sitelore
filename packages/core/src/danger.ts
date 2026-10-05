@@ -4,8 +4,8 @@ import { normalizeForMatching } from "./normalize.js";
 
 /**
  * Rule-based screening for entries that could cause serious harm if an agent
- * followed them. Runs before submission, in the intake service, in the
- * data-repo checks, and again client-side before entries reach an agent.
+ * followed them. Runs locally before submission, in the data-repo checks,
+ * and again client-side before entries reach an agent.
  *
  * Rules on free text will always miss things and misfire sometimes. "block"
  * rules are kept narrow enough that a legitimate entry rarely trips them;

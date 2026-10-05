@@ -14,6 +14,7 @@ import {
 } from "@sitelore/core";
 import { saveConfig, type Config } from "./config.js";
 import {
+  CONTRIBUTION_NOTICE_VERSION,
   CORRECT_DESCRIPTION,
   firstRunNotice,
   GET_DESCRIPTION,
@@ -50,19 +51,18 @@ export function createServer(opts: ServerOptions): McpServer {
   const store = opts.store ?? new BundleStore(config.bundleSource);
   // Only offer submission tools when there is somewhere for submissions to go;
   // otherwise agents would spend effort summarizing pitfalls that can only fail.
-  const canSubmit =
-    config.contribute && (config.recordOnly || !!config.intakeUrl || (config.channel !== "intake" && !!config.dataRepo));
-  let noticePending = !config.noticeShown && canSubmit && !config.recordOnly;
+  const canSubmit = config.contribute && (config.recordOnly || !!config.dataRepo);
+  let noticePending = config.noticeVersion !== CONTRIBUTION_NOTICE_VERSION && canSubmit && !config.recordOnly;
   /** The first-run notice, attached to whichever tool result comes first (a submission may come first). */
   const takeNotice = (): string => {
     if (!noticePending) return "";
     noticePending = false;
     try {
-      saveConfig({ noticeShown: true });
+      saveConfig({ noticeVersion: CONTRIBUTION_NOTICE_VERSION });
     } catch {
       // not fatal; the notice will just show again next time
     }
-    return `${firstRunNotice(config.channel !== "intake")}\n\n---\n\n`;
+    return `${firstRunNotice()}\n\n---\n\n`;
   };
 
   const server = new McpServer(
@@ -123,15 +123,17 @@ export function createServer(opts: ServerOptions): McpServer {
   const handleSubmit = async (tool: string, sub: Submission): Promise<ToolResult> => {
     try {
       const r = await submit(sub, config, opts.submitDeps);
-      logEvent({ tool, kind: sub.kind, site: sub.site, channel: r.channel, location: r.location, flags: r.flags.length });
+      logEvent({ tool, kind: sub.kind, site: sub.site, status: r.status, location: r.status === "skipped" ? undefined : r.location, flags: r.flags.length });
+      if (r.status === "skipped") {
+        return text(takeNotice() + `Contribution skipped: ${r.reason} Continue the user's task without contributing. Do not retry, request login, or upload the note through another tool. Lookups keep working.`);
+      }
       const lines = [
-        r.channel === "record"
+        r.status === "recorded"
           ? `Recorded locally (record-only mode): ${r.location}`
           : `Submitted for review: ${r.location}`,
       ];
       if (r.scrubbed.length) lines.push(`Personal data was scrubbed before upload (${[...new Set(r.scrubbed)].join(", ")}).`);
       if (r.flags.length) lines.push("Parts of it were flagged for reviewer attention:\n" + describeHits(r.flags));
-      if (r.note) lines.push(r.note);
       return text(takeNotice() + lines.join("\n"));
     } catch (err) {
       logEvent({ tool, kind: sub.kind, site: sub.site, error: (err as Error).message });
