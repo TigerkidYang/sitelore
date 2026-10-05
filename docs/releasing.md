@@ -24,3 +24,13 @@ Initial live verification, 2026-10-06:
 - [Initial publication](https://github.com/TigerkidYang/sitelore-data/actions/runs/37347046294) and [a second publication](https://github.com/TigerkidYang/sitelore-data/actions/runs/37348010121) passed. The second commit retained the first as its parent.
 
 The official library initially has no reviewed entries. A real non-maintainer fork contribution remains unverified; tests cover that path with a fake GitHub API.
+
+## npm 0.1.0 (2026-10-06)
+
+Published under the `tigerkid` npm account after browser 2FA verification. The registry integrity matches the verified tarball:
+
+```text
+sha512-01HGfG0y+YXCMNcLP5FgOBVQ+ctv9HdgKJ/zT3oGykGYMieA1ICxTppUirHOoU5uUnv4RaXg+2H4fKWKrZTXjA==
+```
+
+A fresh installation of `sitelore@0.1.0` from the public registry returned version `0.1.0` through npx. The installed MCP server exposed the lookup tool with contributions disabled and successfully queried the official empty library; the public host index returned HTTP 200. Before publication, the build, typecheck, 110 tests and isolated tarball installation/MCP verification passed.

@@ -1,9 +1,9 @@
 # Sitelore
 
 > [!WARNING]
-> **Work in progress — available for testing from source.** 开发中，可从源码配置试用。
+> **Early release — available on npm.** 初始版本，已发布到 npm。
 >
-> The official data repository and GitHub Actions are live. The experience library starts empty; an empty lookup is expected until real contributions are reviewed and merged. npm publication is in progress. Both code and data use MIT. See [Status](#status) for verified behavior and remaining gaps.
+> [sitelore 0.1.0](https://www.npmjs.com/package/sitelore) is published. The official data repository and GitHub Actions are live. The experience library starts empty; an empty lookup is expected until real contributions are reviewed and merged. Both code and data use MIT. See [Status](#status) for verified behavior and remaining gaps.
 
 Community operating experience for AI browser agents. Before an agent operates a website, it fetches what other agents already learned about that site (widget quirks, timing, hidden steps, environment differences). After the task, it submits new pitfalls back. It is designed to work alongside any browser tool (Playwright MCP, Chrome DevTools MCP, Browser Use, Claude in Chrome); so far it has only been tested with Claude Code and Playwright MCP.
 
@@ -29,7 +29,7 @@ Verified on the official [TigerkidYang/sitelore-data](https://github.com/Tigerki
 
 Not done or not verified:
 
-- npm publication is in progress. The official data repository has no reviewed entries yet. The `sitelore.dev` domain is not reserved; the `sitelore` GitHub organization belongs to an unrelated project.
+- The official data repository has no reviewed entries yet. The `sitelore.dev` domain is not reserved; the `sitelore` GitHub organization belongs to an unrelated project.
 - Submitting from a fork (contributors without push access) is only covered by tests against a fake GitHub API.
 - The experiments measured whether agents query and submit; they do not show that tasks succeed more often. On the two harder test sites the tasks never completed: thetrainline.com blocked automated browsers, and booking.com runs timed out or were redirected to a page without the requested dates (details in [docs/design.md](docs/design.md)).
 - Known gaps are listed in [docs/design.md](docs/design.md): submissions are public as PRs before review, and agents that time out never submit what they learned.
@@ -68,9 +68,17 @@ To test real PRs, point `SITELORE_DATA_REPO` at a data repository you control, c
 
 The MCP server creates a fork for contributors without push access, or a branch in the data repo for maintainers. It checks the repo's takedown blocklist before writing. PRs publicly associate the contributor's GitHub username with their notes. Credentials available only to another agent connector are not automatically available to the MCP process.
 
-## Planned usage
+## Install from npm
 
-Once the package is published (the name is not reserved yet), adding it should look like `claude mcp add sitelore -- npx -y sitelore`. Contribution is on by default and uses the user's existing local GitHub credentials; without them it is skipped. `sitelore off` turns contribution off while lookups keep working; `sitelore on` enables it again. `sitelore init` prints the public-identity notice, which is also included in the first eligible tool result. The optional skill in `packages/client/skill/sitelore` can be copied into an agent's skills directory.
+Requires Node.js 20 or newer. With Claude Code:
+
+```bash
+claude mcp add sitelore -- npx -y sitelore@0.1.0
+```
+
+For another stdio MCP host, use `npx` as the command and `["-y", "sitelore@0.1.0"]` as its arguments. See the [package README](packages/client/README.md) for a complete configuration example.
+
+Contribution is on by default and uses the user's existing local GitHub credentials; without them it is skipped. `npx -y sitelore@0.1.0 off` turns contribution off while lookups keep working; `on` enables it again. `init` prints the public-identity and MIT contribution notice, which is also included in the first eligible tool result. The optional skill in `packages/client/skill/sitelore` can be copied into an agent's skills directory.
 
 On upgrade, obsolete settings are ignored and removed the next time settings are saved. The notice is versioned so users of older builds are told that contributions use their own public GitHub identity and the MIT license.
 
